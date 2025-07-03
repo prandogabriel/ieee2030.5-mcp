@@ -15,8 +15,8 @@
     "format:fix": "biome format --write .",
     "check": "biome check .",
     "check:fix": "biome check --write .",
-    "test": "node test-client.js",
-    "test:help": "echo \"Configure .env file or set IEEE2030_BASE_URL and IEEE2030_CERT_PATH environment variables before running 'pnpm test'\""
+    "inspector": "pnpm mcp-inspector",
+    "debug": "pnpm build && pnpm inspector"
   },
   "keywords": [],
   "author": "Gabriel Prando <contact@prandogabriel.dev>",
@@ -24,6 +24,7 @@
   "packageManager": "pnpm@10.12.4",
   "devDependencies": {
     "@biomejs/biome": "^2.0.6",
+    "@modelcontextprotocol/inspector": "^0.15.0",
     "@types/node": "^24.0.10",
     "@types/xml2js": "^0.4.14",
     "esbuild": "^0.25.5",

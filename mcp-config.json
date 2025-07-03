@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "ieee2030.5-mcp": {
+      "command": "node",
+      "args": ["dist/index.js"],
+      "env": {
+        "IEEE2030_BASE_URL": "${IEEE2030_BASE_URL}",
+        "IEEE2030_CERT_PATH": "${IEEE2030_CERT_PATH}",
+        "IEEE2030_CERT_VALUE": "${IEEE2030_CERT_VALUE}",
+        "IEEE2030_KEY_PATH": "${IEEE2030_KEY_PATH}",
+        "IEEE2030_KEY_VALUE": "${IEEE2030_KEY_VALUE}",
+        "IEEE2030_INSECURE": "${IEEE2030_INSECURE}",
+        "IEEE2030_TIMEOUT": "${IEEE2030_TIMEOUT}",
+        "IEEE2030_USER_AGENT": "${IEEE2030_USER_AGENT}"
+      }
+    }
+  }
+}

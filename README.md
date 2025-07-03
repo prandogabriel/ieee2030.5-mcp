@@ -54,25 +54,23 @@ pnpm build
 
 ### 4. Test the Server
 
-With dotenv configured, you can now simply run:
+Use the MCP Inspector for interactive testing and debugging:
 
 ```bash
-# Run the test client (automatically loads .env)
-pnpm test
+# Build and start the inspector
+pnpm debug
 ```
 
-Or manually:
-```bash
-node test-client.js
-```
+This will:
+1. Build your server
+2. Open the MCP Inspector in your browser at `http://localhost:5173`
+3. Connect to your IEEE 2030.5 MCP server
 
-**Previous method (manual environment variables) still works:**
-```bash
-export IEEE2030_BASE_URL="https://your-server:port"
-export IEEE2030_CERT_PATH="/path/to/your/cert.pem"
-export IEEE2030_INSECURE="true"
-node test-client.js
-```
+The inspector provides a web UI where you can:
+- View all available tools
+- Test tools interactively with parameters
+- See real-time responses and errors
+- Debug your server behavior
 
 ## Environment Configuration
 
@@ -122,26 +120,50 @@ pnpm build
 
 ## Usage Examples
 
-### Basic Connection Test
+### Using MCP Inspector
+
+1. **Start the inspector:**
+   ```bash
+   pnpm debug
+   ```
+
+2. **Test ieee2030_get_device_capabilities:**
+   - Open the inspector at `http://localhost:5173`
+   - Click on "Tools" tab
+   - Find `ieee2030_get_device_capabilities` in the list
+   - Click "Execute" to test the tool
+   - View the IEEE 2030.5 XML response in JSON format
+
+3. **Test custom endpoints:**
+   - Select `ieee2030_get_custom_endpoint`
+   - Enter endpoint path like `/dcap`, `/tm`, `/drp`
+   - Execute and see results
+
+### Programmatic Usage
+
+You can also connect to your MCP server programmatically using the MCP SDK:
 
 ```javascript
-// Using the test client
-const client = new IEEE2030MCPTestClient();
-await client.connect();
-await client.testConnection();
-```
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+import { spawn } from 'node:child_process';
 
-### Get Device Capabilities
+// Start your server process
+const serverProcess = spawn('node', ['dist/index.js']);
+const transport = new StdioClientTransport({
+  reader: serverProcess.stdout,
+  writer: serverProcess.stdin,
+});
 
-```javascript
-await client.getDeviceCapabilities();
-```
+// Connect and use tools
+const client = new Client({ name: 'my-client', version: '1.0.0' }, { capabilities: {} });
+await client.connect(transport);
 
-### Custom Endpoint Access
-
-```javascript
-await client.testCustomEndpoint('/dcap');
-await client.testCustomEndpoint('/tm');
+// Call IEEE 2030.5 tools
+const response = await client.request({
+  method: 'tools/call',
+  params: { name: 'ieee2030_get_device_capabilities' }
+}, { method: 'tools/call' });
 ```
 
 ## Security Notes
