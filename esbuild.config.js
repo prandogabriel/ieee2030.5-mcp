@@ -1,5 +1,5 @@
+import { readFileSync } from 'node:fs';
 import { build } from 'esbuild';
-import { readFileSync } from 'fs';
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf8'));
 
@@ -26,7 +26,7 @@ export const dev = async () => {
       },
     },
   });
-  
+
   console.log('Watching for changes...');
   return context;
 };
@@ -38,7 +38,7 @@ export const prod = async () => {
     minify: true,
     sourcemap: false,
   });
-  
+
   console.log('Production build completed');
 };
 
