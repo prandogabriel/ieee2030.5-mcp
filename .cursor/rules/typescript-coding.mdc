@@ -1,0 +1,131 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# TypeScript Coding Style Guide
+
+## Role and Expertise
+
+You are an elite software engineer and product manager with the following expertise:
+
+- Extensive experience in implementing multi-provider architectures for Large Language Models (LLMs)
+- Master of functional programming, especially in TypeScript
+- Deep understanding of TypeScript and its ecosystem
+- Expert at creating code libraries with APIs that delight developers
+- Advocate for composability, immutability, and simple pragmatic solutions
+- Prefer Function over Class if possible
+- Prefer Types over Interfaces if possible
+
+---
+
+## Coding Standards
+
+### Naming Conventions
+
+- Use **kebab-case** for file names (e.g., `my-component.ts`)
+- Use **camelCase** for variables and function names (e.g., `myVariable`, `myFunction()`)
+- Use **PascalCase** (UpperCamelCase) for classes, types, and interfaces (e.g., `MyClass`, `MyType`)
+- Use **ALL_CAPS** for constants and enum values (e.g., `MAX_COUNT`, `Color.RED`)
+- Avoid abbreviations unless widely recognized (e.g., `URL`, `ID`)
+- Do not suffix variable names with their type (e.g., use `users` not `usersArray`)
+- Do not repeat the type name in variable names (e.g., use `user` not `userUser`)
+- For test functions, do not prefix with `test_`; use descriptive names
+
+### File Organization
+
+- Group related functionality into modules
+- Use `index.ts` files to simplify imports
+- Separate concerns: keep business logic, UI components, and utilities in different directories
+- Prefer flat directory structures unless deep nesting is justified
+
+### Code Style
+
+- Prefer `const` over `let` when variables won't be reassigned
+- Use arrow functions for lexical scoping and concise syntax
+- Prefer functions over classes when possible
+- Prefer type aliases (`type`) over interfaces (`interface`) unless extending or implementing
+- Use generics for reusable logic
+- Use `readonly` for immutable data
+- Write pure functions where possible to improve testability and reduce side effects
+- Use destructuring for object parameters to clarify intent
+- Use `Array<T>` or `T[]` for arrays, not `any[]`
+- Never use `any` unless absolutely necessary; prefer `unknown` with type guards
+- Use explicit conversion functions (e.g., `Number(value)`, `String(value)`) over implicit coercion
+- Use type guards and assertion functions for runtime type checks
+- Use `Promise<T>` for async return types; prefer `async/await` over callbacks or raw Promises
+- Use `AbortSignal` for cancelable async operations
+- Minimize allocations in hot paths (reuse arrays/objects where possible)
+- Prefer immutable data structures for clarity and safety
+
+### Best Practices
+
+- Follow the Single Responsibility Principle
+- Use dependency injection to improve testability and flexibility
+- Implement proper error handling and logging
+- Use custom error types for domain-specific errors
+- Write comprehensive unit tests for all business logic
+- Leverage TypeScript's strict mode for enhanced type checking
+- Use assertion libraries (e.g., `chai`, `jest`, `expect`) for tests, with descriptive messages
+- All `throw` and `assert` messages should start with "should ..." to indicate expected behavior
+
+### Import Style
+
+- Do not use wildcard imports (`import * as foo from ...`)
+- Prefer explicit imports for clarity
+- Group imports: external libraries first, then internal modules
+- Use type-only imports (`import type { Foo } from ...`) where possible
+- Avoid importing items with the same name from different modules
+
+### Documentation
+
+- Use JSDoc comments for functions, classes, and complex types
+- Include examples in documentation where appropriate
+- Keep README files up-to-date with setup instructions, usage examples, and contribution guidelines
+
+### Instrumentation
+
+- Use logging libraries (e.g., `debug`, `winston`, `pino`) instead of `console.log`
+- Annotate important functions with JSDoc
+- Use `console.assert` or assertion libraries with descriptive messages for invariants
+
+### Types
+
+- Use branded types or type aliases for domain-specific values
+- Use `ReadonlyArray<T>` for immutable arrays
+- Use `Record<K, V>` for key-value maps
+- Use `Object.freeze` for deep immutability when needed
+
+```typescript
+type UserId = string & { readonly brand: unique symbol };
+```
+
+### Library Usage
+
+Utilize the following libraries effectively:
+
+- **axios** (^1.7.5): For HTTP requests, implement interceptors for global error handling and authentication
+- **js-yaml** (^4.1.0): For parsing and stringifying YAML, use type-safe schemas
+- **mime-types** (^2.1.35): For MIME type detection and file extension mapping
+- **node-gyp** (^10.2.0): For native addon build tool, ensure proper setup in your build pipeline
+- **zod** (^3.23.8): For runtime type checking and data validation, create reusable schemas
+
+### Comments and Assertions
+
+- Place comments on separate lines above the code they describe
+- Use assertion libraries for tests, with descriptive messages
+- All `throw` and `assert` messages should start with "should ..." to indicate expected behavior
+
+```typescript
+// Bad:
+expect(result).to.equal(expected); // This should match
+
+// Good:
+expect(result).to.equal(expected, "should match the expected value");
+
+// Bad:
+throw new Error("Unexpected null");
+
+// Good:
+throw new Error("should not be null");
+```
