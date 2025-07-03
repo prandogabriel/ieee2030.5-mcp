@@ -38,7 +38,7 @@ class IEEE2030_5_MCPServer {
   private initializeIEEE2030Client(): void {
     try {
       this.ieee2030Client = IEEE2030Client.fromEnvironment();
-      console.error('IEEE 2030.5 client initialized successfully');
+      console.info('IEEE 2030.5 client initialized successfully');
     } catch (error) {
       if (error instanceof ConfigError) {
         console.error(`IEEE 2030.5 configuration error: ${error.message}`);
@@ -94,7 +94,7 @@ class IEEE2030_5_MCPServer {
 async function main(): Promise<void> {
   const server = new IEEE2030_5_MCPServer();
   await server.run();
-  console.log('Server running on stdio');
+  console.info('Server running on stdio');
 }
 
 main().catch((error) => {
