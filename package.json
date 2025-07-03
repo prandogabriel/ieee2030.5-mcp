@@ -15,7 +15,8 @@
     "format:fix": "biome format --write .",
     "check": "biome check .",
     "check:fix": "biome check --write .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test-mcp": "node test-client.js",
+    "test-mcp:help": "echo \"Set IEEE2030_BASE_URL and IEEE2030_CERT_PATH environment variables before running 'pnpm test'\""
   },
   "keywords": [],
   "author": "Gabriel Prando <contact@prandogabriel.dev>",
@@ -24,12 +25,15 @@
   "devDependencies": {
     "@biomejs/biome": "^2.0.6",
     "@types/node": "^24.0.10",
+    "@types/xml2js": "^0.4.14",
     "esbuild": "^0.25.5",
     "nodemon": "^3.1.10",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.13.3"
+    "@modelcontextprotocol/sdk": "^1.13.3",
+    "axios": "^1.10.0",
+    "xml2js": "^0.6.2"
   }
 }
