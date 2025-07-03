@@ -26,18 +26,25 @@ Copy the example environment file and configure your IEEE 2030.5 server:
 cp .env.example .env
 ```
 
-Edit `.env` with your configuration:
+Edit `.env` with your configuration. The server will automatically load environment variables from the `.env` file:
 
 ```bash
 # REQUIRED: Your IEEE 2030.5 server URL
 IEEE2030_BASE_URL=https://your-ieee2030-server:port
 
-# REQUIRED: Certificate for authentication
+# REQUIRED: Certificate for authentication (choose one option)
+# Option 1: Single PEM file (like curl -E $CTRL_CERT)
 IEEE2030_CERT_PATH=/path/to/your/client.pem
 
+# Option 2: Separate files
+# IEEE2030_CERT_PATH=/path/to/client.crt
+# IEEE2030_KEY_PATH=/path/to/client.key
+
 # Optional: Security settings
-IEEE2030_INSECURE=true  # for development with self-signed certs
+IEEE2030_INSECURE=true  # Set to true for development with self-signed certs
 ```
+
+**Note:** The `.env` file is automatically ignored by git for security.
 
 ### 3. Build the Project
 
@@ -47,13 +54,23 @@ pnpm build
 
 ### 4. Test the Server
 
+With dotenv configured, you can now simply run:
+
 ```bash
-# Set your environment variables
+# Run the test client (automatically loads .env)
+pnpm test
+```
+
+Or manually:
+```bash
+node test-client.js
+```
+
+**Previous method (manual environment variables) still works:**
+```bash
 export IEEE2030_BASE_URL="https://your-server:port"
 export IEEE2030_CERT_PATH="/path/to/your/cert.pem"
 export IEEE2030_INSECURE="true"
-
-# Run the test client
 node test-client.js
 ```
 

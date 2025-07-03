@@ -15,8 +15,8 @@
     "format:fix": "biome format --write .",
     "check": "biome check .",
     "check:fix": "biome check --write .",
-    "test-mcp": "node test-client.js",
-    "test-mcp:help": "echo \"Set IEEE2030_BASE_URL and IEEE2030_CERT_PATH environment variables before running 'pnpm test'\""
+    "test": "node test-client.js",
+    "test:help": "echo \"Configure .env file or set IEEE2030_BASE_URL and IEEE2030_CERT_PATH environment variables before running 'pnpm test'\""
   },
   "keywords": [],
   "author": "Gabriel Prando <contact@prandogabriel.dev>",
@@ -34,6 +34,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.13.3",
     "axios": "^1.10.0",
+    "dotenv": "^17.0.1",
     "xml2js": "^0.6.2"
   }
 }
