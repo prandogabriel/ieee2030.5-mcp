@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { build } from 'esbuild';
+import { build, context } from 'esbuild';
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf8'));
 
@@ -17,18 +17,13 @@ const baseConfig = {
 
 // Development build
 export const dev = async () => {
-  const context = await build({
+  const ctx = await context({
     ...baseConfig,
-    watch: {
-      onRebuild(error, result) {
-        if (error) console.error('Watch build failed:', error);
-        else console.log('Watch build succeeded:', result);
-      },
-    },
   });
 
+  await ctx.watch();
   console.log('Watching for changes...');
-  return context;
+  return ctx;
 };
 
 // Production build

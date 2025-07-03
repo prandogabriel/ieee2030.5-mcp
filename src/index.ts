@@ -77,6 +77,7 @@ class IEEE2030_5_MCPServer {
 async function main(): Promise<void> {
   const server = new IEEE2030_5_MCPServer();
   await server.run();
+  console.log('Server running on stdio');
 }
 
 main().catch((error) => {
