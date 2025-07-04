@@ -165,10 +165,13 @@ To get all DER information for all devices:
 export function getNavigationGuideHandler() {
   return async () => {
     return {
-      content: [
+      messages: [
         {
-          type: 'text' as const,
-          text: ieee2030NavigationGuideContent,
+          role: 'assistant' as const,
+          content: {
+            type: 'text' as const,
+            text: ieee2030NavigationGuideContent,
+          },
         },
       ],
     };

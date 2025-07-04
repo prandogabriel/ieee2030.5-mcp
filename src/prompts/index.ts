@@ -8,7 +8,12 @@ import {
 
 export type PromptName = 'ieee2030_navigation_guide';
 
-export type PromptHandler = () => Promise<{ content: Array<{ type: 'text'; text: string }> }>;
+export type PromptHandler = () => Promise<{
+  messages: Array<{
+    role: 'user' | 'assistant';
+    content: { type: 'text'; text: string };
+  }>;
+}>;
 
 export type PromptRegistry = Record<PromptName, PromptHandler>;
 
