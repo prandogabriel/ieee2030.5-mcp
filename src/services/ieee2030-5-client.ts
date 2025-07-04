@@ -1,16 +1,13 @@
 import { readFileSync } from 'node:fs';
 import https from 'node:https';
-import { promisify } from 'node:util';
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
-import { parseString } from 'xml2js';
+import { parseStringPromise as parseXML } from 'xml2js';
 import { ConfigService } from './config.js';
 import type {
   DeviceCapability,
   IEEE2030ClientConfig,
   IEEE2030Response,
 } from './ieee2030-5-types.js';
-
-const parseXML = promisify(parseString);
 
 export class IEEE2030Client {
   private client: AxiosInstance;
@@ -27,49 +24,70 @@ export class IEEE2030Client {
       baseURL: this.config.baseUrl,
       timeout: this.config.timeout || 30000,
       headers: {
-        'Accept': 'application/sep+xml, application/xml, */*',
+        Accept: 'application/sep+xml, application/xml, */*',
         'User-Agent': this.config.userAgent || 'ieee2030.5-mcp/0.0.0',
       },
     };
 
-    // Configure HTTPS agent with certificates
-    if (this.config.certPath || this.config.certValue) {
-      let cert: string | Buffer | undefined;
-      let key: string | Buffer | undefined;
-      let ca: string | Buffer | undefined;
-
-      if (this.config.certValue) {
-        cert = this.config.certValue;
-        key = this.config.keyValue || this.config.certValue; // Use cert as key if no separate key
-        ca = this.config.caValue;
-      } else if (this.config.certPath) {
-        const pemContent = readFileSync(this.config.certPath, 'utf-8');
-        cert = pemContent;
-        key = this.config.keyPath ? readFileSync(this.config.keyPath, 'utf-8') : pemContent; // Use cert as key if no separate key
-        ca = this.config.caPath ? readFileSync(this.config.caPath, 'utf-8') : undefined;
-      }
-
-      if (cert && key) {
-        const httpsAgentOptions: https.AgentOptions = {
-          cert: cert,
-          key: key,
-          rejectUnauthorized: !this.config.insecure,
-          maxVersion: 'TLSv1.2',
-        };
-
-        if (ca) {
-          httpsAgentOptions.ca = ca;
-        }
-
-        const httpsAgent = new https.Agent(httpsAgentOptions);
-        axiosConfig.httpsAgent = httpsAgent;
-      }
+    const httpsAgent = this.createHttpsAgent();
+    if (httpsAgent) {
+      axiosConfig.httpsAgent = httpsAgent;
     }
 
     return axios.create(axiosConfig);
   }
 
-  private async parseXMLResponse(xmlString: string): Promise<any> {
+  private createHttpsAgent(): https.Agent | undefined {
+    if (!this.config.certPath && !this.config.certValue) {
+      return undefined;
+    }
+
+    const { cert, key, ca } = this.loadCertificates();
+
+    if (!cert || !key) {
+      return undefined;
+    }
+
+    const httpsAgentOptions: https.AgentOptions = {
+      cert,
+      key,
+      rejectUnauthorized: !this.config.insecure,
+      maxVersion: 'TLSv1.2',
+    };
+
+    if (ca) {
+      httpsAgentOptions.ca = ca;
+    }
+
+    return new https.Agent(httpsAgentOptions);
+  }
+
+  private loadCertificates(): {
+    cert?: string | Buffer;
+    key?: string | Buffer;
+    ca?: string | Buffer;
+  } {
+    if (this.config.certValue) {
+      return {
+        cert: this.config.certValue,
+        key: this.config.keyValue || this.config.certValue,
+        ca: this.config.caValue,
+      };
+    }
+
+    if (this.config.certPath) {
+      const pemContent = readFileSync(this.config.certPath, 'utf-8');
+      return {
+        cert: pemContent,
+        key: this.config.keyPath ? readFileSync(this.config.keyPath, 'utf-8') : pemContent,
+        ca: this.config.caPath ? readFileSync(this.config.caPath, 'utf-8') : undefined,
+      };
+    }
+
+    return {};
+  }
+
+  private async parseXMLResponse<T>(xmlString: string): Promise<T> {
     try {
       const result = await parseXML(xmlString, {
         explicitArray: false,
@@ -83,7 +101,7 @@ export class IEEE2030Client {
       return result;
     } catch (error) {
       throw new Error(
-        `XML parsing error: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `XML parsing error: ${error instanceof Error ? error.message : 'Object error'}`
       );
     }
   }
@@ -93,14 +111,14 @@ export class IEEE2030Client {
       const response = await this.client.get(endpoint);
       const parsedData = await this.parseXMLResponse(response.data);
       return {
-        data: parsedData,
+        data: parsedData as T,
         status: response.status,
         headers: response.headers as Record<string, string>,
       };
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(
-          `IEEE 2030.5 request failed: ${error.message} (${error.response?.status || 'unknown'})`
+          `IEEE 2030.5 request failed: ${error.message} (${error.response?.status || 'Object'})`
         );
       }
       throw error;
@@ -164,7 +182,7 @@ export class IEEE2030Client {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Unknown connection error',
+        message: error instanceof Error ? error.message : 'Object connection error',
       };
     }
   }
