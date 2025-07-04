@@ -10,7 +10,7 @@ import type {
   IEEE2030Response,
 } from './ieee2030-5-types.js';
 
-const parseXML = promisify(parseString.bind(parseString));
+const parseXML = promisify(parseString);
 
 export class IEEE2030Client {
   private client: AxiosInstance;
@@ -27,32 +27,43 @@ export class IEEE2030Client {
       baseURL: this.config.baseUrl,
       timeout: this.config.timeout || 30000,
       headers: {
-        'Content-Type': 'application/xml',
-        Accept: 'application/xml',
+        'Accept': 'application/sep+xml, application/xml, */*',
         'User-Agent': this.config.userAgent || 'ieee2030.5-mcp/0.0.0',
       },
     };
 
     // Configure HTTPS agent with certificates
     if (this.config.certPath || this.config.certValue) {
-      let cert: Buffer | undefined;
-      let key: Buffer | undefined;
+      let cert: string | Buffer | undefined;
+      let key: string | Buffer | undefined;
+      let ca: string | Buffer | undefined;
 
       if (this.config.certValue) {
-        cert = Buffer.from(this.config.certValue);
-        key = this.config.keyValue ? Buffer.from(this.config.keyValue) : cert; // Use cert as key if no separate key
+        cert = this.config.certValue;
+        key = this.config.keyValue || this.config.certValue; // Use cert as key if no separate key
+        ca = this.config.caValue;
       } else if (this.config.certPath) {
-        cert = readFileSync(this.config.certPath);
-        key = this.config.keyPath ? readFileSync(this.config.keyPath) : cert; // Use cert as key if no separate key
+        const pemContent = readFileSync(this.config.certPath, 'utf-8');
+        cert = pemContent;
+        key = this.config.keyPath ? readFileSync(this.config.keyPath, 'utf-8') : pemContent; // Use cert as key if no separate key
+        ca = this.config.caPath ? readFileSync(this.config.caPath, 'utf-8') : undefined;
       }
 
-      const httpsAgent = new https.Agent({
-        cert,
-        key,
-        rejectUnauthorized: !this.config.insecure,
-      });
+      if (cert && key) {
+        const httpsAgentOptions: https.AgentOptions = {
+          cert: cert,
+          key: key,
+          rejectUnauthorized: !this.config.insecure,
+          maxVersion: 'TLSv1.2',
+        };
 
-      axiosConfig.httpsAgent = httpsAgent;
+        if (ca) {
+          httpsAgentOptions.ca = ca;
+        }
+
+        const httpsAgent = new https.Agent(httpsAgentOptions);
+        axiosConfig.httpsAgent = httpsAgent;
+      }
     }
 
     return axios.create(axiosConfig);
@@ -80,10 +91,7 @@ export class IEEE2030Client {
   private async makeRequest<T>(endpoint: string): Promise<IEEE2030Response<T>> {
     try {
       const response = await this.client.get(endpoint);
-
-      // Parse XML response
       const parsedData = await this.parseXMLResponse(response.data);
-
       return {
         data: parsedData,
         status: response.status,

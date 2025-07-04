@@ -18,6 +18,8 @@ export class ConfigService {
     const certValue = process.env.IEEE2030_CERT_VALUE;
     const keyPath = process.env.IEEE2030_KEY_PATH;
     const keyValue = process.env.IEEE2030_KEY_VALUE;
+    const caPath = process.env.IEEE2030_CA_PATH;
+    const caValue = process.env.IEEE2030_CA_VALUE;
 
     if (!certPath && !certValue) {
       throw new ConfigError(
@@ -34,6 +36,8 @@ export class ConfigService {
       certValue,
       keyPath,
       keyValue,
+      caPath,
+      caValue,
       insecure: process.env.IEEE2030_INSECURE === 'true',
       timeout: process.env.IEEE2030_TIMEOUT
         ? Number.parseInt(process.env.IEEE2030_TIMEOUT, 10)

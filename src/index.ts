@@ -87,7 +87,7 @@ class IEEE2030_5_MCPServer {
   async run(): Promise<void> {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error('IEEE 2030.5 MCP server running on stdio');
+    console.info('IEEE 2030.5 MCP server running on stdio');
   }
 }
 

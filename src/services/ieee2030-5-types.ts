@@ -99,6 +99,8 @@ export interface IEEE2030ClientConfig {
   certValue?: string;
   keyPath?: string;
   keyValue?: string;
+  caPath?: string;
+  caValue?: string;
   insecure?: boolean;
   timeout?: number;
   userAgent?: string;
