@@ -2,6 +2,11 @@
 
 A Model Context Protocol (MCP) server for interacting with IEEE 2030.5 (SEP 2.0) Smart Energy Profile servers.
 
+[![npm version](https://badge.fury.io/js/@prandogabriel%2Fieee2030.5-mcp.svg)](https://badge.fury.io/js/@prandogabriel%2Fieee2030.5-mcp)
+[![License](https://img.shields.io/badge/License-BY--NC--SA--4.0-blue.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+**Quick Start:** `npx -y @prandogabriel/ieee2030.5-mcp`
+
 ## Table of Contents
 
 - [Features](#features)
@@ -11,6 +16,8 @@ A Model Context Protocol (MCP) server for interacting with IEEE 2030.5 (SEP 2.0)
   - [Install pnpm](#install-pnpm)
   - [IEEE 2030.5 Server Requirements](#ieee-20305-server-requirements)
 - [Quick Start](#quick-start)
+  - [Option 1: Using Published Package (Fastest)](#option-1-using-published-package-fastest)
+  - [Option 2: Local Development Setup](#option-2-local-development-setup)
 - [Environment Configuration](#environment-configuration)
 - [Available MCP Tools](#available-mcp-tools)
   - [Connection & Status Tools](#connection--status-tools)
@@ -22,7 +29,8 @@ A Model Context Protocol (MCP) server for interacting with IEEE 2030.5 (SEP 2.0)
   - [Development Commands](#development-commands)
   - [Development Workflow](#development-workflow)
 - [Usage Examples](#usage-examples)
-  - [Using with Claude Desktop](#using-with-claude-desktop)
+  - [Using Published Package (Recommended)](#using-published-package-recommended)
+  - [Using with Claude Desktop (Local Development)](#using-with-claude-desktop-local-development)
   - [Using MCP Inspector](#using-mcp-inspector)
   - [Programmatic Usage](#programmatic-usage)
 - [Contributing](#contributing)
@@ -97,6 +105,26 @@ To use this MCP server, you need access to an IEEE 2030.5 compliant server with:
 - Distributed Energy Resource (DER) management systems
 
 ## Quick Start
+
+### Option 1: Using Published Package (Fastest)
+
+For most users, the simplest way is to use the published npm package:
+
+1. **Ensure Node.js 20+ is installed**:
+   ```bash
+   node --version  # Should be 20.0.0 or higher
+   ```
+
+2. **Test the server**:
+   ```bash
+   npx -y @prandogabriel/ieee2030.5-mcp
+   ```
+
+3. **Configure with Claude Desktop** - see [Published Package Configuration](#using-published-package-recommended)
+
+### Option 2: Local Development Setup
+
+For development or customization:
 
 ### 1. Verify Requirements
 
@@ -256,7 +284,62 @@ pnpm watch
 
 ## Usage Examples
 
-### Using with Claude Desktop
+### Using Published Package (Recommended)
+
+The easiest way to use this MCP server is through the published npm package. No need to clone or build locally!
+
+#### With npx (Quick Start)
+
+You can run the server directly using npx:
+
+```bash
+npx -y @prandogabriel/ieee2030.5-mcp
+```
+
+#### Claude Desktop Configuration (Published Package)
+
+**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`  
+**Windows:** `%APPDATA%/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "ieee2030-5-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@prandogabriel/ieee2030.5-mcp@0.1.0"
+      ],
+      "env": {
+        "IEEE2030_BASE_URL": "https://your-ieee2030-server:port",
+        "IEEE2030_CERT_PATH": "/path/to/your/cert.pem",
+        "IEEE2030_INSECURE": "true"
+      }
+    }
+  }
+}
+```
+
+**Benefits of using the published package:**
+- ✅ **No local setup required** - just install and run
+- ✅ **Always up-to-date** - specify version or use latest
+- ✅ **Automatic dependency management** - npx handles everything
+- ✅ **Cross-platform compatibility** - works on any system with Node.js
+
+**Configuration Steps:**
+
+1. **Ensure Node.js 20+ is installed** (see [Prerequisites](#prerequisites))
+2. **Add configuration to Claude Desktop** using the JSON above
+3. **Update environment variables** with your IEEE 2030.5 server details:
+   - Replace `https://your-ieee2030-server:port` with your server URL
+   - Replace `/path/to/your/cert.pem` with your certificate path
+   - Set `IEEE2030_INSECURE` to `"false"` for production
+4. **Restart Claude Desktop**
+5. **Test the connection:**
+   - Ask Claude: "Check the IEEE 2030.5 server status"
+   - Ask Claude: "Show me the navigation guide for IEEE 2030.5 resources"
+
+### Using with Claude Desktop (Local Development)
 
 To use this MCP server with Claude Desktop, add the following configuration to your Claude Desktop config file:
 
