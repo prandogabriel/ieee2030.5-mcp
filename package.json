@@ -8,6 +8,13 @@
   "bin": {
     "ieee2030-5-mcp-server": "dist/index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prandogabriel/ieee2030.5-mcp.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "node esbuild.config.js prod",
     "dev": "node esbuild.config.js dev",
@@ -20,7 +27,8 @@
     "check": "biome check .",
     "check:fix": "biome check --write .",
     "inspector": "pnpm build && pnpm mcp-inspector --config mcp-config.json --server ieee2030.5-mcp",
-    "debug": "pnpm build && pnpm inspector"
+    "debug": "pnpm build && pnpm inspector",
+    "release": "pnpm build && pnpm publish --provenance --access public"
   },
   "keywords": [],
   "author": "Gabriel Prando <contact@prandogabriel.dev>",

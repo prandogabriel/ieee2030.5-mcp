@@ -18,11 +18,16 @@ jobs:
       - name: 🛎️ Checkout
         uses: actions/checkout@v4
 
+      - name: 🏗️ Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.4
+
       - name: 🏗️ Setup Node
         uses: actions/setup-node@v4
         with:
-          cache: npm
           node-version-file: .nvmrc
+          cache: 'pnpm'
           registry-url: https://registry.npmjs.org
 
       - name: 📥 Cache
@@ -30,16 +35,16 @@ jobs:
         id: npm-cache
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-npm-
 
       - name: 📦 Install
         if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: pnpm i --frozen-lockfil
 
       - name: 🚀 Release
-        run: npm run release
+        run: pnpm release
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
