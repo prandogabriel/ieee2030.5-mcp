@@ -1,9 +1,13 @@
 {
-  "name": "ieee2030.5-mcp",
-  "version": "0.0.0",
+  "name": "@prandogabriel/ieee2030.5-mcp",
+  "version": "0.0.1",
+  "files": ["dist"],
   "description": "",
   "main": "dist/index.js",
   "type": "module",
+  "bin": {
+    "ieee2030-5-mcp-server": "dist/index.js"
+  },
   "scripts": {
     "build": "node esbuild.config.js prod",
     "dev": "node esbuild.config.js dev",
