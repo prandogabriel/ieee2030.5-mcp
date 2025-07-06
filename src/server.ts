@@ -1,12 +1,15 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { ConfigError } from './services/config.js';
-import { IEEE2030Client } from './services/ieee2030-5-client.js';
+import { setupPromptHandlers, setupToolHandlers } from './handlers/index.js';
 import type { PromptRegistry } from './prompts/index.js';
 import { createPromptRegistry } from './prompts/index.js';
+import { ConfigError } from './services/config.js';
+import { IEEE2030Client } from './services/ieee2030-5-client.js';
 import type { ToolRegistry } from './tools/index.js';
 import { createToolRegistry } from './tools/index.js';
-import { setupPromptHandlers, setupToolHandlers } from './handlers/index.js';
 
 export class IEEE2030_5_MCPServer {
   private server: Server;
@@ -15,10 +18,14 @@ export class IEEE2030_5_MCPServer {
   private promptRegistry: PromptRegistry;
 
   constructor() {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const packageJson = JSON.parse(
+      fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8')
+    );
     this.server = new Server(
       {
-        name: 'ieee2030.5-mcp',
-        version: '0.0.0',
+        name: packageJson.name || 'ieee2030.5-mcp',
+        version: packageJson.version,
       },
       {
         capabilities: {

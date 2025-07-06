@@ -1,12 +1,12 @@
 {
   "name": "@prandogabriel/ieee2030.5-mcp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "files": ["dist"],
   "description": "",
   "main": "dist/index.js",
   "type": "module",
   "bin": {
-    "ieee2030-5-mcp-server": "dist/index.js"
+    "ieee2030.5-mcp": "dist/index.js"
   },
   "repository": {
     "type": "git",

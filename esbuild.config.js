@@ -13,6 +13,9 @@ const baseConfig = {
   sourcemap: true,
   external: Object.keys(pkg.dependencies || {}),
   logLevel: 'info',
+  banner: {
+    js: '#!/usr/bin/env node',
+  },
 };
 
 // Development build

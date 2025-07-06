@@ -1,10 +1,10 @@
+import type { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import {
   ErrorCode,
   GetPromptRequestSchema,
   ListPromptsRequestSchema,
   McpError,
 } from '@modelcontextprotocol/sdk/types.js';
-import type { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { PromptRegistry } from '../prompts/index.js';
 import { getAvailablePrompts } from '../prompts/index.js';
 
