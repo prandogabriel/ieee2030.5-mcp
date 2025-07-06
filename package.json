@@ -1,6 +1,6 @@
 {
   "name": "@prandogabriel/ieee2030.5-mcp",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "files": ["dist"],
   "description": "",
   "main": "dist/index.js",
